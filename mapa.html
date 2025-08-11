@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Hechos - MetaMapa</title>
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="mapa.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  </head>
+
+  <body>
+    <header class="header header--map">
+      <div class="container">
+        <a href="index.html" class="logo">MetaMapa</a>
+        <nav class="nav">
+          <a href="#" class="nav__link">Mis Colecciones</a>
+          <a href="subir-hecho.html" class="btn btn--primary">Subir Hecho</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="map-layout">
+      <aside class="sidebar">
+        <div class="filter-panel">
+          <h3 class="filter-panel__title">Colecciones</h3>
+          <ul class="collection-list">
+            <li><a href="mapa.html?collection=1">Rutas de la Revolución</a></li>
+            <li><a href="mapa.html?collection=2">Eventos Naturales Históricos</a></li>
+            <li><a href="mapa.html?collection=3">Monumentos de la República</a></li>
+          </ul>
+          <a href="colecciones.html" class="btn btn--secondary btn--small">Ver Todas las Colecciones</a>
+        </div>
+
+        <div class="filter-panel">
+          <h3 class="filter-panel__title">Filtros de Hechos</h3>
+          <div class="form-group">
+            <label for="category">Categoría</label>
+            <select id="category" class="form-control">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="date-range">Rango de Fecha</label>
+            <input type="text" id="date-range" class="form-control" placeholder="DD/MM/AAAA - DD/MM/AAAA">
+          </div>
+          <div class="form-group">
+            <label for="source">Fuente</label>
+            <select id="source" class="form-control">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <div class="toggle-switch">
+            <span>Modo Curado</span>
+            <label class="switch">
+              <input type="checkbox">
+              <span class="slider"></span>
+            </label>
+            <span>Modo Irrestricto</span>
+          </div>
+        </div>
+      </aside>
+      <div id="mapid" class="map-container"></div>
+    </div>
+
+    <div id="fact-modal" class="modal">
+      <div class="modal__content">
+        <span class="modal__close">&times;</span>
+        <h2 id="modal-title">Título del Hecho</h2>
+        <div class="fact-details">
+          <p><span class="label">Fecha:</span> <span id="modal-date"></span></p>
+          <p><span class="label">Ubicación:</span> <span id="modal-location"></span></p>
+          <p><span class="label">Fuente:</span> <span id="modal-source"></span></p>
+        </div>
+        <p id="modal-description" class="fact-description"></p>
+
+        <div class="actions">
+          <a id="ver-hecho-btn" href="#" class="btn btn--secondary">Ver Hecho</a>
+          <button id="report-button" class="btn btn--danger">Solicitar Eliminación</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="report-modal" class="modal">
+      <div class="modal__content">
+        <span class="modal__close-report">&times;</span>
+        <h2 class="modal__title">Solicitar Eliminación de Hecho</h2>
+        <p class="modal__subtitle">
+          Por favor, justifica tu solicitud con un mínimo de 500 caracteres.
+        </p>
+        <form id="report-form">
+          <div class="form-group">
+            <label for="report-reason">Justificación</label>
+            <textarea id="report-reason" class="form-control" rows="10" minlength="500" required></textarea>
+          </div>
+          <button type="submit" class="btn btn--danger">Enviar Solicitud</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const facts = [
+        {
+          id: 1,
+          lat: 4.6465,
+          lng: -74.0536,
+          title: "Batalla de Boyacá",
+          date: "7 de Agosto de 1819",
+          location: "Puente de Boyacá, Colombia",
+          source: "Archivo Nacional de Colombia",
+          description: "Una de las batallas más decisivas de la campaña de liberación de Nueva Granada, asegurando la independencia de Colombia.",
+          collectionId: 1
+        },
+        {
+          id: 2,
+          lat: 4.6099,
+          lng: -74.0682,
+          title: "Terremoto de Cúcuta",
+          date: "18 de Mayo de 1875",
+          location: "Cúcuta, Colombia",
+          source: "Archivo Histórico Regional",
+          description: "Un devastador terremoto que afectó a la región de Cúcuta, destruyendo gran parte de la ciudad y cobrando muchas vidas.",
+          collectionId: 2
+        },
+        {
+          id: 3,
+          lat: 4.6987,
+          lng: -74.0416,
+          title: "Asesinato de Jorge Eliécer Gaitán",
+          date: "9 de Abril de 1948",
+          location: "Bogotá, Colombia",
+          source: "Periódicos de la época",
+          description: "El asesinato del líder político Jorge Eliécer Gaitán desató una ola de disturbios y violencia en la capital, conocidos como el 'Bogotazo'.",
+          collectionId: 1
+        }
+      ];
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const collectionId = urlParams.get('collection');
+      const filteredFacts = collectionId ? facts.filter(f => f.collectionId === parseInt(collectionId)) : facts;
+
+      const map = L.map('mapid').setView([4.65, -74.05], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+      const factModal = document.getElementById("fact-modal");
+      const closeModalBtn = document.querySelector(".modal__close");
+      const reportModal = document.getElementById("report-modal");
+      const reportButton = document.getElementById("report-button");
+      const closeReportModalBtn = document.querySelector(".modal__close-report");
+      const verHechoBtn = document.getElementById("ver-hecho-btn");
+
+      const modalTitle = document.getElementById("modal-title");
+      const modalDate = document.getElementById("modal-date");
+      const modalLocation = document.getElementById("modal-location");
+      const modalSource = document.getElementById("modal-source");
+      const modalDescription = document.getElementById("modal-description");
+
+      filteredFacts.forEach(fact => {
+        const marker = L.marker([fact.lat, fact.lng]).addTo(map);
+        marker.bindPopup(`<b>${fact.title}</b>`).openPopup();
+
+        marker.on('click', () => {
+          modalTitle.textContent = fact.title;
+          modalDate.textContent = fact.date;
+          modalLocation.textContent = fact.location;
+          modalSource.textContent = fact.source;
+          modalDescription.textContent = fact.description;
+
+          // Configura el enlace del botón "Ver hecho" para que apunte a la página de detalle
+          verHechoBtn.href = `hecho.html?id=${fact.id}`;
+
+          factModal.style.display = "block";
+        });
+      });
+
+      reportButton.addEventListener('click', () => {
+        factModal.style.display = 'none';
+        reportModal.style.display = 'block';
+      });
+
+      closeModalBtn.onclick = () => {
+        factModal.style.display = "none";
+      };
+
+      closeReportModalBtn.onclick = () => {
+        reportModal.style.display = "none";
+      };
+
+      window.onclick = (event) => {
+        if (event.target == factModal) {
+          factModal.style.display = "none";
+        }
+        if (event.target == reportModal) {
+          reportModal.style.display = "none";
+        }
+      };
+
+      const reportForm = document.getElementById('report-form');
+      reportForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const justification = document.getElementById('report-reason').value;
+        console.log(`Solicitud de eliminación enviada con la justificación: ${justification}`);
+        alert('¡Tu solicitud ha sido enviada con éxito!');
+        reportModal.style.display = 'none';
+      });
+    </script>
+  </body>
+
+</html>

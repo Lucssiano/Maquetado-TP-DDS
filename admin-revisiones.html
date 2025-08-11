@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revisiones - MetaMapa Admin</title>
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="admin-layout">
+      <aside class="sidebar">
+        <a href="index.html" class="logo">MetaMapa Admin</a>
+        <nav class="sidebar__nav">
+          <a href="admin-dashboard.html" class="sidebar__link">Dashboard</a>
+          <a href="admin-colecciones.html" class="sidebar__link">Colecciones</a>
+          <a href="admin-fuentes.html" class="sidebar__link">Fuentes</a>
+          <a href="admin-revisiones.html" class="sidebar__link sidebar__link--active">Revisiones</a>
+        </nav>
+        <a href="auth.html" class="btn btn--secondary sidebar__logout">Cerrar Sesión</a>
+      </aside>
+
+      <main class="main-content">
+        <h1 class="page-title">Revisiones y Moderación</h1>
+        <div class="tabs">
+          <button class="tab-button tab-button--active">Hechos Pendientes (45)</button>
+          <button class="tab-button">Solicitudes de Eliminación (7)</button>
+        </div>
+
+        <div class="table-container tab-content">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Hecho</th>
+                <th>Descripción</th>
+                <th>Subido por</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Terremoto de 1985</td>
+                <td>Breve descripción del hecho...</td>
+                <td>Juan Pérez</td>
+                <td>
+                  <button class="btn btn--small btn--primary">Aprobar</button>
+                  <button class="btn btn--small btn--secondary">Modificar</button>
+                  <button class="btn btn--small btn--danger">Rechazar</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </main>
+    </div>
+  </body>
+
+</html>

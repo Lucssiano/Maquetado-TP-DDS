@@ -1,0 +1,78 @@
+.fact-detail-page {
+	padding: 60px 0;
+}
+.fact-detail-page .container {
+	max-width: 900px;
+}
+#fact-title {
+	font-size: 48px;
+	margin-bottom: 10px;
+	color: var(--primary-color);
+}
+.fact-metadata {
+	display: flex;
+	gap: 30px;
+	margin-bottom: 30px;
+	color: var(--text-medium);
+	font-size: 16px;
+}
+.fact-metadata .label {
+	font-weight: bold;
+	color: var(--text-dark);
+}
+.fact-media {
+	margin-bottom: 30px;
+	text-align: center;
+}
+.fact-media img {
+	max-width: 100%;
+	height: auto;
+	border-radius: var(--radius);
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+.fact-description-text {
+	line-height: 1.6;
+	margin-bottom: 40px;
+	color: var(--text-dark);
+	font-size: 18px;
+}
+.actions {
+	display: flex;
+	gap: 20px;
+}
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1000; /* Asegúrate de que esté por encima de todo */
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal__content {
+	background-color: #fefefe;
+	margin: 15% auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 80%;
+	max-width: 600px;
+	border-radius: var(--radius);
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal__close-report {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.modal__close-report:hover,
+.modal__close-report:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}

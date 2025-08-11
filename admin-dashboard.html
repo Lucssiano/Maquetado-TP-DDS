@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MetaMapa Admin</title>
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="admin-layout">
+      <aside class="sidebar">
+        <a href="index.html" class="logo">MetaMapa Admin</a>
+        <nav class="sidebar__nav">
+          <a href="admin-dashboard.html" class="sidebar__link sidebar__link--active">Dashboard</a>
+          <a href="admin-colecciones.html" class="sidebar__link">Colecciones</a>
+          <a href="admin-fuentes.html" class="sidebar__link">Fuentes</a>
+          <a href="admin-revisiones.html" class="sidebar__link">Revisiones</a>
+        </nav>
+        <a href="auth.html" class="btn btn--secondary sidebar__logout">Cerrar Sesión</a>
+      </aside>
+
+      <main class="main-content">
+        <h1 class="page-title">Panel de Control</h1>
+
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <h3 class="stat-card__title">Hechos Pendientes</h3>
+            <p class="stat-card__number">45</p>
+          </div>
+          <div class="stat-card">
+            <h3 class="stat-card__title">Solicitudes de Eliminación</h3>
+            <p class="stat-card__number">7</p>
+          </div>
+          <div class="stat-card">
+            <h3 class="stat-card__title">Colecciones Activas</h3>
+            <p class="stat-card__number">12</p>
+          </div>
+        </div>
+
+        <div class="recent-activity">
+          <h2 class="section-title">Actividad Reciente</h2>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Acción</th>
+                  <th>Usuario</th>
+                  <th>Hecho</th>
+                  <th>Fecha</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Subió hecho</td>
+                  <td>Juan Pérez</td>
+                  <td>Terremoto de 1985</td>
+                  <td>11/08/2025</td>
+                </tr>
+                <tr>
+                  <td>Solicitó eliminación</td>
+                  <td>María López</td>
+                  <td>Ruinas de Teyuna</td>
+                  <td>10/08/2025</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+
+</html>

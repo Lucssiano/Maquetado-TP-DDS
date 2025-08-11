@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Detalle de Hecho - MetaMapa</title>
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="hecho.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="container">
+        <a href="index.html" class="logo">MetaMapa</a>
+        <nav class="nav">
+          <a href="mapa.html" class="nav__link">Volver al Mapa</a>
+          <a href="#" class="nav__link">Mis Colecciones</a>
+          <a href="subir-hecho.html" class="btn btn--primary">Subir Hecho</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="fact-detail-page">
+        <div class="container">
+          <h1 id="fact-title">Título del Hecho</h1>
+          <div class="fact-metadata">
+            <p><span class="label">Fecha:</span> <span id="fact-date"></span></p>
+            <p><span class="label">Ubicación:</span> <span id="fact-location"></span></p>
+            <p><span class="label">Fuente:</span> <span id="fact-source"></span></p>
+          </div>
+
+          <div class="fact-media" id="fact-media">
+            <img id="fact-image" src="" alt="Multimedia del hecho">
+          </div>
+
+          <p id="fact-description" class="fact-description-text"></p>
+
+          <div class="actions">
+            <a href="#" id="collection-link" class="btn btn--secondary">Ver Colección</a>
+            <button id="report-button" class="btn btn--danger">Solicitar Eliminación</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="report-modal" class="modal">
+      <div class="modal__content">
+        <span class="modal__close-report">&times;</span>
+        <h2 class="modal__title">Solicitar Eliminación de Hecho</h2>
+        <p class="modal__subtitle">
+          Por favor, justifica tu solicitud con un mínimo de 500 caracteres.
+        </p>
+        <form id="report-form">
+          <div class="form-group">
+            <label for="report-reason">Justificación</label>
+            <textarea id="report-reason" class="form-control" rows="10" minlength="500" required></textarea>
+          </div>
+          <button type="submit" class="btn btn--danger">Enviar Solicitud</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const facts = [
+        {
+          id: 1,
+          lat: 4.6465,
+          lng: -74.0536,
+          title: "Batalla de Boyacá",
+          date: "7 de Agosto de 1819",
+          location: "Puente de Boyacá, Colombia",
+          source: "Archivo Nacional de Colombia",
+          description: "Una de las batallas más decisivas de la campaña de liberación de Nueva Granada, asegurando la independencia de Colombia.",
+          collectionId: 1
+        },
+        {
+          id: 2,
+          lat: 4.6099,
+          lng: -74.0682,
+          title: "Terremoto de Cúcuta",
+          date: "18 de Mayo de 1875",
+          location: "Cúcuta, Colombia",
+          source: "Archivo Histórico Regional",
+          description: "Un devastador terremoto que afectó a la región de Cúcuta, destruyendo gran parte de la ciudad y cobrando muchas vidas.",
+          collectionId: 2
+        },
+        {
+          id: 3,
+          lat: 4.6987,
+          lng: -74.0416,
+          title: "Asesinato de Jorge Eliécer Gaitán",
+          date: "9 de Abril de 1948",
+          location: "Bogotá, Colombia",
+          source: "Periódicos de la época",
+          description: "El asesinato del líder político Jorge Eliécer Gaitán desató una ola de disturbios y violencia en la capital, conocidos como el 'Bogotazo'.",
+          collectionId: 1
+        }
+      ];
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const factId = urlParams.get('id');
+      const currentFact = facts.find(fact => fact.id === parseInt(factId));
+
+      if (currentFact) {
+        document.getElementById('page-title').textContent = currentFact.title;
+        document.getElementById('fact-title').textContent = currentFact.title;
+        document.getElementById('fact-date').textContent = currentFact.date;
+        document.getElementById('fact-location').textContent = currentFact.location;
+        document.getElementById('fact-source').textContent = currentFact.source;
+        document.getElementById('fact-description').textContent = currentFact.description;
+        document.getElementById('fact-image').src = `https://picsum.photos/800/600?random=${currentFact.id}`;
+        document.getElementById('collection-link').href = `mapa.html?collection=${currentFact.collectionId}`;
+      } else {
+        document.getElementById('fact-title').textContent = "Hecho no encontrado";
+        document.getElementById('fact-description').textContent = "Lo sentimos, el hecho que buscas no existe.";
+      }
+
+      const reportModal = document.getElementById("report-modal");
+      const reportButton = document.getElementById("report-button");
+      const closeReportModalBtn = document.querySelector(".modal__close-report");
+
+      reportButton.addEventListener('click', () => {
+        reportModal.style.display = 'block';
+      });
+
+      closeReportModalBtn.onclick = () => {
+        reportModal.style.display = "none";
+      };
+
+      window.onclick = (event) => {
+        if (event.target == reportModal) {
+          reportModal.style.display = "none";
+        }
+      };
+
+      const reportForm = document.getElementById('report-form');
+      reportForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const justification = document.getElementById('report-reason').value;
+        console.log(`Solicitud de eliminación para el hecho ${factId} enviada con la justificación: ${justification}`);
+        alert('¡Tu solicitud ha sido enviada con éxito!');
+        reportModal.style.display = 'none';
+      });
+    </script>
+  </body>
+
+</html>
