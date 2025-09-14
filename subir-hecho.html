@@ -48,9 +48,14 @@
             </div>
             <div class="form-group">
               <label>Ubicación</label>
-              <div id="map-preview" style="height: 200px; border-radius: 4px; margin-bottom: 10px;"></div>
-              <input type="hidden" id="lat-input">
-              <input type="hidden" id="lng-input">
+              <div class="location-search-container">
+                <input type="text" id="address-input" class="form-control" placeholder="Ej: Av. Rivadavia 1234, CABA">
+                <button type="button" class="btn btn--secondary" id="geocode-btn">Buscar</button>
+              </div>
+              <div id="map-preview" style="height: 200px; border-radius: 4px; margin-top: 10px; margin-bottom: 10px;">
+              </div>
+              <input type="hidden" id="lat-input" name="latitud">
+              <input type="hidden" id="lng-input" name="longitud">
             </div>
             <div class="form-group">
               <label for="fact-date">Fecha</label>
@@ -68,21 +73,58 @@
 
     <script>
       // Lógica de inicialización del mapa (ejemplo con Leaflet)
-      const map = L.map('map-preview').setView([4.65, -74.05], 13);
+      const map = L.map('map-preview').setView([-34.6037, -58.3816], 13); // Centrado en Buenos Aires
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
       const latInput = document.getElementById('lat-input');
       const lngInput = document.getElementById('lng-input');
+      const addressInput = document.getElementById('address-input');
+      const geocodeBtn = document.getElementById('geocode-btn');
       let marker = null;
 
-      map.on('click', (e) => {
-        const { lat, lng } = e.latlng;
+      // Función auxiliar para actualizar el mapa y los campos
+      function updateMapAndInputs(lat, lng) {
         if (marker) {
           map.removeLayer(marker);
         }
         marker = L.marker([lat, lng]).addTo(map);
         latInput.value = lat;
         lngInput.value = lng;
+      }
+
+      // Lógica para el clic en el mapa (se mantiene)
+      map.on('click', (e) => {
+        const { lat, lng } = e.latlng;
+        updateMapAndInputs(lat, lng);
+      });
+
+      // Lógica para el botón de búsqueda por dirección
+      geocodeBtn.addEventListener('click', () => {
+        const address = addressInput.value.trim();
+        if (address) {
+          const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
+
+          fetch(url)
+            .then(response => response.json())
+            .then(data => {
+              if (data && data.length > 0) {
+                const firstResult = data[0];
+                const lat = parseFloat(firstResult.lat);
+                const lng = parseFloat(firstResult.lon);
+
+                updateMapAndInputs(lat, lng);
+                map.setView([lat, lng], 16); // Centra el mapa con un zoom más alto
+              } else {
+                alert('No se encontraron resultados para la dirección.');
+              }
+            })
+            .catch(error => {
+              console.error('Error en la geocodificación:', error);
+              alert('Hubo un error al buscar la dirección. Intenta de nuevo.');
+            });
+        } else {
+          alert('Por favor, ingresa una dirección.');
+        }
       });
     </script>
   </body>

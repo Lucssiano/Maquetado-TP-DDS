@@ -27,7 +27,7 @@
         <h1 class="page-title">Gestión de Colecciones</h1>
         <div class="content-header">
           <button class="btn btn--primary">Crear Nueva Colección</button>
-          <button class="btn btn--secondary">Importar desde CSV</button>
+          <button class="btn btn--secondary" onclick="openCSVFilePicker()">Importar desde CSV</button>
         </div>
 
         <div class="table-container">
@@ -35,7 +35,7 @@
             <thead>
               <tr>
                 <th>Nombre</th>
-                <th>Algoritmo</th>
+                <th>Algoritmo de consenso</th>
                 <th>Fuentes Asociadas</th>
                 <th>Acciones</th>
               </tr>
@@ -43,7 +43,7 @@
             <tbody>
               <tr>
                 <td>Rutas de la Revolución</td>
-                <td>Consenso Simple</td>
+                <td>Mayoría simple</td>
                 <td>Archivo Nacional</td>
                 <td>
                   <button class="btn btn--small">Editar</button>
@@ -52,7 +52,7 @@
               </tr>
               <tr>
                 <td>Eventos Naturales</td>
-                <td>Promedio Ponderado</td>
+                <td>Absoluta</td>
                 <td>Archivo Histórico</td>
                 <td>
                   <button class="btn btn--small">Editar</button>
@@ -64,6 +64,40 @@
         </div>
       </main>
     </div>
+
+    <script>
+      function openCSVFilePicker() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.csv';
+
+        input.onchange = function (event) {
+          const file = event.target.files[0];
+          if (file) {
+            console.log('File selected:', file.name);
+            console.log('File type:', file.type);
+
+            // Optional: Add a more robust file type check
+            if (!file.name.toLowerCase().endsWith('.csv')) {
+              alert('Invalid file type. Please select a .csv file.');
+              return; // Exit the function if the file type is wrong
+            }
+
+            // TODO: Implement the logic to read and upload the CSV file content.
+            // Example: You could use a FileReader to read the file content.
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              const csvContent = e.target.result;
+              console.log('CSV content:', csvContent);
+              // You can now send this content to your backend.
+            };
+            reader.readAsText(file);
+          }
+        };
+
+        input.click();
+      }
+    </script>
   </body>
 
 </html>
